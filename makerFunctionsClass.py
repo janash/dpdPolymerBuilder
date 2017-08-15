@@ -8,9 +8,9 @@ import numpy as np
 
 class makerFunctions:
     def __init__(self, fileName):
-        '''
-        Initializaiton of makerFunctions class
-        '''
+        """
+        Initialization of makerFunctions class
+        """
 
         self._fN = fileName
         self._density = 3
@@ -71,18 +71,18 @@ class makerFunctions:
                 self._fo.write("\n")
                 for item2 in item:
                     num = float(item2)
-                    if (num.is_integer()):
+                    if num.is_integer():
                         num = int(num)
                     self._fo.write("%s " % num)
 
     def assignCoordinatesAndBonds(self):
         for ch in range(0, int(self._numChains)):
-            startIndex = (ch) * (self._numMonMol) + 1
+            startIndex = ch * self._numMonMol + 1
             startBondIndex = ch * self._numBondsPolymer + 1
             startAngleIndex = ch * (self._numMonMol - 2) + 1
             self.chainCoordinates(ch, startIndex)
             self.chainBonds(ch, startBondIndex)
-            if (self._angles is True):
+            if self._angles is True:
                 self.chainAngles(ch, startAngleIndex)
         watStart = int(self._numMonMol) * int(self._numChains) + 1
         random.seed()
@@ -100,17 +100,17 @@ class makerFunctions:
         f = self._fN.split("\n")
         for line in f:
             p = line.split('=')
-            if (p[0] == 'numtypes'):
+            if p[0] == 'numtypes':
                 self._numTypes = p[1]
-            if (p[0] == 'sequence'):
+            if p[0] == 'sequence':
                 self._sequence = p[1]
-            if (p[0] == 'numChains'):
+            if p[0] == 'numChains':
                 self._numChains = p[1]
-            if (p[0] == 'volFraction'):
+            if p[0] == 'volFraction':
                 self._volFraction = p[1]
-            if (p[0] == 'angles'):
+            if p[0] == 'angles':
                 self._angles = bool(p[1])
-            if (p[0] == 'angle'):
+            if p[0] == 'angle':
                 self._angleString.append(p[1])
                 splitString = re.split(':', self._angleString[-1].strip())
                 self._angleSequence.append(splitString[0])
@@ -138,8 +138,8 @@ class makerFunctions:
             self._numChains).rstrip() + "_" + volFractionString2 + ".data"
 
     def parseSequence(self):
-        
-        '''
+
+        """
         Parses sequences. Calculates:
         	1. nBondTypes - number of different bond types
         	2. nBondType - List containing bond information for chain (as integer)
@@ -148,7 +148,7 @@ class makerFunctions:
         	5. seqList - List containing sequence
         	6. seqListN - Number of different types in polymer
         	7. nTypesinChain - number of monomer types in chain
-        '''
+        """
 
 
 
@@ -182,7 +182,6 @@ class makerFunctions:
 
     def printSystemInfo(self):
         print("Printing Info for system...")
-        # print("File %s loaded...\n" %self._fN)
 
         print("Input Parameters: ")
         print("Number of Atom Types:\t\t%s" % self._numTypes)
@@ -190,7 +189,7 @@ class makerFunctions:
         print("Number of polymer chains:\t\t%s" % self._numChains)
         print("Polymer volume fraction:\t\t%s" % self._volFraction)
         print("System Angles:\t\t%s" % self._angles)
-        if (self._angles == True):
+        if self._angles:
             print("Number of Angle Types:\t\t%s" % self._nAngleTypes)
             # for x in self._angleString:
             #	print x
@@ -205,7 +204,7 @@ class makerFunctions:
         # atom-ID molecule-ID atom-type x y z
         # startIndex-2 occurs because python data structures start ordering at
         # index 0 and startIndex is iterated after initial assignment
-        for x in range(0, (self._numMonMol)):
+        for x in range(0, self._numMonMol):
             self._atomInformation[startIndex - 1, 0] = startIndex
             startIndex += 1
             self._atomInformation[startIndex - 2, 1] = ch + 1
@@ -213,11 +212,11 @@ class makerFunctions:
 
             random.seed()
 
-            if (x == 0):
+            if x == 0:
                 self._atomInformation[startIndex - 2, 3] = random.random() * self._boxLength
                 self._atomInformation[startIndex - 2, 4] = random.random() * self._boxLength
                 self._atomInformation[startIndex - 2, 5] = random.random() * self._boxLength
-            if (x > 0):
+            if x > 0:
                 self._atomInformation[startIndex - 2, 3] = self._atomInformation[startIndex - 3, 3] + (
                     random.random() - 0.5)
                 self._atomInformation[startIndex - 2, 4] = self._atomInformation[startIndex - 3, 4] + (
@@ -228,7 +227,7 @@ class makerFunctions:
     def chainBonds(self, ch, startIndex):
         # Format of bond section:
         # ID type atom1 atom2
-        for x in range(0, (self._numBondsPolymer)):
+        for x in range(0, self._numBondsPolymer):
             self._bondInformation[startIndex - 1, 0] = startIndex
             self._bondInformation[startIndex - 1, 1] = self._nBondType[x]
             self._bondInformation[startIndex - 1, 2] = ((self._numBondsPolymer + 1) * ch) + x + 1
@@ -246,9 +245,9 @@ class makerFunctions:
                 if interest in self._angleSequence[n]:
                     self._angleInformation[startIndex - 1, 0] = self._numAngles + 1
                     self._angleInformation[startIndex - 1, 1] = self._angleType[n]
-                    self._angleInformation[startIndex - 1, 2] = ((self._numMonMol) * ch) + x + 1
-                    self._angleInformation[startIndex - 1, 3] = ((self._numMonMol) * ch) + x + 2
-                    self._angleInformation[startIndex - 1, 4] = ((self._numMonMol) * ch) + x + 3
+                    self._angleInformation[startIndex - 1, 2] = (self._numMonMol * ch) + x + 1
+                    self._angleInformation[startIndex - 1, 3] = (self._numMonMol * ch) + x + 2
+                    self._angleInformation[startIndex - 1, 4] = (self._numMonMol * ch) + x + 3
                     startIndex += 1
                     self._numAngles += 1
 
