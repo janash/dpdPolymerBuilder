@@ -21,6 +21,13 @@ class makerFunctions:
         self._angleSequence = []
         self._angleType = []
         self._numAngles = 0
+        self._numChains = 0
+        self._volFraction = 0.0
+        self._nTypesinChain = 0
+        self._sequence = ""
+        self._nameString = ""
+        self._numTypes = 0
+
 
 
         self.importData()
@@ -28,7 +35,6 @@ class makerFunctions:
         self.parseSequence()
         self.calcSystemParameters()
 
-        # self._nAngleTypes=len(self._angleType)
         self._nAngleTypes = len(set(self._angleType))
 
         self.printSystemInfo()
@@ -98,6 +104,7 @@ class makerFunctions:
     def importData(self):
         # f=open(self._fN)
         f = self._fN.split("\n")
+        print("Importing data\n")
         for line in f:
             p = line.split('=')
             if p[0] == 'numtypes':
@@ -150,9 +157,7 @@ class makerFunctions:
         	7. nTypesinChain - number of monomer types in chain
         """
 
-
-
-        self._seqList = re.split('-|_|;|:|#', self._sequence)
+        self._seqList = re.split('-|_|;|:|#', string=self._sequence)
         self._seqListN = map(int, self._seqList)
         self._nTypesinChain = len(set(self._seqListN))
         self._nBondTypes = ' '.join([i for i in self._sequence if not i.isdigit()])
@@ -169,20 +174,19 @@ class makerFunctions:
             ind = mapBond.index(self._nBondTypesList[x]) + 1
             self._nBondType.append(mapBond2[ind])
 
-            self._numBondsPolymer = len(self._nBondType)
+        self._numBondsPolymer = len(self._nBondType)
 
     def calcSystemParameters(self):
         self._numMonMol = len(self._seqList)
         self._nM = int(self._numMonMol) * int(self._numChains)
         boxVolume = self._nM / (self._density * float(self._volFraction))
-        self._boxLength = math.pow(boxVolume, 0.33333)
+        self._boxLength = math.pow(boxVolume, float(1/3))
         self._numAtoms = boxVolume * self._density
         self._numWat = self._numAtoms - self._nM
         self._numBonds = float(self._numBondsPolymer) * float(self._numChains)
 
     def printSystemInfo(self):
         print("Printing Info for system...")
-
         print("Input Parameters: ")
         print("Number of Atom Types:\t\t%s" % self._numTypes)
         print("Polymer sequence:\t\t%s" % self._sequence)
@@ -204,6 +208,7 @@ class makerFunctions:
         # atom-ID molecule-ID atom-type x y z
         # startIndex-2 occurs because python data structures start ordering at
         # index 0 and startIndex is iterated after initial assignment
+
         for x in range(0, self._numMonMol):
             self._atomInformation[startIndex - 1, 0] = startIndex
             startIndex += 1
