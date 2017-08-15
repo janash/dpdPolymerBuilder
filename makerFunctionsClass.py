@@ -14,11 +14,14 @@ class makerFunctions:
 
         self._fN = fileName
         self._density = 3
+
+        #Initialize all the variables used in the class
         self._angles = False
         self._angleString = []
         self._angleSequence = []
         self._angleType = []
         self._numAngles = 0
+
 
         self.importData()
         self.systemName()
@@ -47,7 +50,8 @@ class makerFunctions:
 
     def writeHeader(self):
         self._fo.write("LAMMPS data file for system %s\n\n" % self._nameString)
-        ##System info
+
+        #System info
         self._fo.write("%i atoms\n" % self._numAtoms)
         self._fo.write("%s bonds\n" % int(self._numBonds))
         self._fo.write("%s angles\n" % self._numAngles)
@@ -78,7 +82,7 @@ class makerFunctions:
             startAngleIndex = ch * (self._numMonMol - 2) + 1
             self.chainCoordinates(ch, startIndex)
             self.chainBonds(ch, startBondIndex)
-            if (self._angles == True):
+            if (self._angles is True):
                 self.chainAngles(ch, startAngleIndex)
         watStart = int(self._numMonMol) * int(self._numChains) + 1
         random.seed()
@@ -134,14 +138,19 @@ class makerFunctions:
             self._numChains).rstrip() + "_" + volFractionString2 + ".data"
 
     def parseSequence(self):
-        # Parses sequences. Calculates:
-        #	1. nBondTypes - number of different bond types
-        #	2. nBondType - List containing bond information for chain (as integer)
-        #	3. numBondsPolymer - number of bonds per chain
-        #	4. nBondTypesList - original bond sequence from file
-        #	5. seqList - List containing sequence
-        #	6. seqListN - Number of different types in polymer
-        #	7. nTypesinChain - number of monomer types in chain
+        
+        '''
+        Parses sequences. Calculates:
+        	1. nBondTypes - number of different bond types
+        	2. nBondType - List containing bond information for chain (as integer)
+        	3. numBondsPolymer - number of bonds per chain
+        	4. nBondTypesList - original bond sequence from file
+        	5. seqList - List containing sequence
+        	6. seqListN - Number of different types in polymer
+        	7. nTypesinChain - number of monomer types in chain
+        '''
+
+
 
         self._seqList = re.split('-|_|;|:|#', self._sequence)
         self._seqListN = map(int, self._seqList)
