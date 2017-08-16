@@ -1,5 +1,15 @@
 language: python
+
 python:
   - "3.6"
+
+install:
+  - pip install pytest-cov
+
 # command to run tests
-script: pytest tests.py
+script: 
+  - pytest tests.py
+  - py.test --cov=./
+
+after_success:
+  - codecov
